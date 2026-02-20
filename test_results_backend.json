@@ -1,0 +1,222 @@
+{
+  "total_tests": 10,
+  "passed_tests": 10,
+  "success_rate": "100.0%",
+  "detailed_results": [
+    {
+      "test": "User Registration",
+      "status": "PASS",
+      "details": {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0dXNlcjIzMzE1MUBleGFtcGxlLmNvbSIsImV4cCI6MTc3MjIzNTExMX0.grk_ZMz1JiBIQ2v8wj7S7mY0GUZpggjx6D3RvihZg6Y",
+        "user": {
+          "email": "testuser233151@example.com",
+          "nome": "Test User",
+          "role": "user"
+        }
+      }
+    },
+    {
+      "test": "Admin Login",
+      "status": "PASS",
+      "details": {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBzcG9ydGNlbnRlci5jb20iLCJleHAiOjE3NzIyMzUxMTF9.vX8Uv0lBivU23d7BNvP9eJFEBO5JHF5sdw3PYrLgqYQ",
+        "user": {
+          "email": "admin@sportcenter.com",
+          "nome": "Amministratore",
+          "role": "admin"
+        }
+      }
+    },
+    {
+      "test": "User Login",
+      "status": "PASS",
+      "details": {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0dXNlcjIzMzE1MUBleGFtcGxlLmNvbSIsImV4cCI6MTc3MjIzNTExMn0.T6hj4rFbASa8ox5fNTqbTBqXZoA_4xirGVxH4SyMlIk",
+        "user": {
+          "email": "testuser233151@example.com",
+          "nome": "Test User",
+          "role": "user"
+        }
+      }
+    },
+    {
+      "test": "Get User Info",
+      "status": "PASS",
+      "details": {
+        "email": "testuser233151@example.com",
+        "nome": "Test User",
+        "role": "user"
+      }
+    },
+    {
+      "test": "Get Courts",
+      "status": "PASS",
+      "details": [
+        {
+          "id": "padel1",
+          "nome": "Padel 1",
+          "tipo": "padel",
+          "slot_duration": 90
+        },
+        {
+          "id": "padel2",
+          "nome": "Padel 2",
+          "tipo": "padel",
+          "slot_duration": 90
+        },
+        {
+          "id": "padel3",
+          "nome": "Padel 3",
+          "tipo": "padel",
+          "slot_duration": 90
+        },
+        {
+          "id": "padel4",
+          "nome": "Padel 4",
+          "tipo": "padel",
+          "slot_duration": 90
+        },
+        {
+          "id": "calcio1",
+          "nome": "Calcio a 7",
+          "tipo": "calcio",
+          "slot_duration": 60
+        }
+      ]
+    },
+    {
+      "test": "Get Court Availability",
+      "status": "PASS",
+      "details": {
+        "slots": [
+          {
+            "ora_inizio": "07:30",
+            "ora_fine": "09:00",
+            "available": true
+          },
+          {
+            "ora_inizio": "09:00",
+            "ora_fine": "10:30",
+            "available": true
+          },
+          {
+            "ora_inizio": "10:30",
+            "ora_fine": "12:00",
+            "available": true
+          },
+          {
+            "ora_inizio": "12:00",
+            "ora_fine": "13:30",
+            "available": true
+          },
+          {
+            "ora_inizio": "13:30",
+            "ora_fine": "15:00",
+            "available": true
+          },
+          {
+            "ora_inizio": "15:00",
+            "ora_fine": "16:30",
+            "available": true
+          },
+          {
+            "ora_inizio": "16:30",
+            "ora_fine": "18:00",
+            "available": true
+          },
+          {
+            "ora_inizio": "18:00",
+            "ora_fine": "19:30",
+            "available": true
+          },
+          {
+            "ora_inizio": "19:30",
+            "ora_fine": "21:00",
+            "available": true
+          },
+          {
+            "ora_inizio": "21:00",
+            "ora_fine": "22:30",
+            "available": true
+          },
+          {
+            "ora_inizio": "22:30",
+            "ora_fine": "24:00",
+            "available": true
+          }
+        ]
+      }
+    },
+    {
+      "test": "Create Booking",
+      "status": "PASS",
+      "details": {
+        "id": "BK1771630312946364",
+        "user_email": "testuser233151@example.com",
+        "user_nome": "Test User",
+        "court_id": "padel1",
+        "court_nome": "Padel 1",
+        "court_tipo": "padel",
+        "data": "2026-02-20",
+        "ora_inizio": "10:00",
+        "ora_fine": "11:30",
+        "created_at": "2026-02-20T23:31:52.946377+00:00"
+      }
+    },
+    {
+      "test": "Get My Bookings",
+      "status": "PASS",
+      "details": [
+        {
+          "id": "BK1771630312946364",
+          "user_email": "testuser233151@example.com",
+          "user_nome": "Test User",
+          "court_id": "padel1",
+          "court_nome": "Padel 1",
+          "court_tipo": "padel",
+          "data": "2026-02-20",
+          "ora_inizio": "10:00",
+          "ora_fine": "11:30",
+          "created_at": "2026-02-20T23:31:52.946377+00:00"
+        }
+      ]
+    },
+    {
+      "test": "Admin Get All Bookings",
+      "status": "PASS",
+      "details": [
+        {
+          "id": "BK1771630196853954",
+          "user_email": "test@example.com",
+          "user_nome": "Mario Rossi",
+          "court_id": "padel1",
+          "court_nome": "Padel 1",
+          "court_tipo": "padel",
+          "data": "2026-02-25",
+          "ora_inizio": "18:00",
+          "ora_fine": "19:30",
+          "created_at": "2026-02-20T23:29:56.853967+00:00"
+        },
+        {
+          "id": "BK1771630312946364",
+          "user_email": "testuser233151@example.com",
+          "user_nome": "Test User",
+          "court_id": "padel1",
+          "court_nome": "Padel 1",
+          "court_tipo": "padel",
+          "data": "2026-02-20",
+          "ora_inizio": "10:00",
+          "ora_fine": "11:30",
+          "created_at": "2026-02-20T23:31:52.946377+00:00"
+        }
+      ]
+    },
+    {
+      "test": "Delete Booking",
+      "status": "PASS",
+      "details": {
+        "message": "Prenotazione cancellata"
+      }
+    }
+  ]
+}
