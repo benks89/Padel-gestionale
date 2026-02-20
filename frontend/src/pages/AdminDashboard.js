@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
 import axios from 'axios';
 import { toast } from 'sonner';
-import { Calendar, Clock, Trash2, LogOut, Filter } from 'lucide-react';
+import { Calendar, Clock, Trash2, LogOut, Filter, CalendarDays } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
