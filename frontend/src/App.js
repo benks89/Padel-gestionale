@@ -5,6 +5,7 @@ import Landing from '@/pages/Landing';
 import Auth from '@/pages/Auth';
 import UserDashboard from '@/pages/UserDashboard';
 import AdminDashboard from '@/pages/AdminDashboard';
+import AdminCalendar from '@/pages/AdminCalendar';
 import Booking from '@/pages/Booking';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import '@/App.css';
