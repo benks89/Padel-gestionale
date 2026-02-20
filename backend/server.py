@@ -340,14 +340,27 @@ async def admin_create_booking(booking_data: BookingCreate, user_email: str, cur
     total_minutes = hour * 60 + minute + court["slot_duration"]
     ora_fine = f"{total_minutes // 60:02d}:{total_minutes % 60:02d}"
     
-    existing_booking = await db.bookings.find_one({
-        "court_id": booking_data.court_id,
-        "data": booking_data.data,
-        "ora_inizio": booking_data.ora_inizio
-    })
+    def time_to_minutes(time_str):
+        h, m = map(int, time_str.split(':'))
+        return h * 60 + m
     
-    if existing_booking:
-        raise HTTPException(status_code=400, detail="Slot già prenotato")
+    def check_overlap(start1, end1, start2, end2):
+        return start1 < end2 and start2 < end1
+    
+    new_start = time_to_minutes(booking_data.ora_inizio)
+    new_end = total_minutes
+    
+    existing_bookings = await db.bookings.find({
+        "court_id": booking_data.court_id,
+        "data": booking_data.data
+    }, {"_id": 0}).to_list(100)
+    
+    for booking in existing_bookings:
+        existing_start = time_to_minutes(booking["ora_inizio"])
+        existing_end = time_to_minutes(booking["ora_fine"])
+        
+        if check_overlap(new_start, new_end, existing_start, existing_end):
+            raise HTTPException(status_code=400, detail="Slot non disponibile - conflitto con prenotazione esistente")
     
     booking_id = f"BK{datetime.now(timezone.utc).timestamp()}".replace(".", "")
     
