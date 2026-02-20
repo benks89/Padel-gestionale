@@ -81,6 +81,14 @@ export default function AdminDashboard() {
               <span className="font-heading font-bold text-xl">ADMIN PANEL</span>
             </div>
             <div className="flex items-center gap-4">
+              <Button 
+                variant="ghost" 
+                onClick={() => navigate('/admin/calendar')}
+                data-testid="calendar-view-btn"
+              >
+                <CalendarDays className="w-4 h-4 mr-2" />
+                Vista Calendario
+              </Button>
               <span className="text-sm text-slate-600">Admin: <strong>{user?.nome}</strong></span>
               <Button variant="ghost" onClick={handleLogout} size="sm" data-testid="admin-logout-btn">
                 <LogOut className="w-4 h-4" />
