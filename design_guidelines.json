@@ -1,0 +1,215 @@
+{
+  "design_system": {
+    "identity": {
+      "name": "SportCenter Pro",
+      "tone": "Energetic, Precise, Competitive, Clean",
+      "archetype": "The Performance Pro",
+      "visual_mood": "Tactical Minimalism"
+    },
+    "typography": {
+      "font_family": {
+        "headings": "Barlow Condensed, sans-serif",
+        "body": "Inter, sans-serif",
+        "mono": "JetBrains Mono, monospace"
+      },
+      "scale": {
+        "display": "text-6xl md:text-8xl font-black tracking-tighter uppercase",
+        "h1": "text-5xl md:text-6xl font-bold tracking-tight",
+        "h2": "text-4xl font-bold tracking-tight",
+        "h3": "text-2xl font-semibold tracking-normal",
+        "body_lg": "text-lg leading-relaxed",
+        "body": "text-base leading-relaxed",
+        "caption": "text-sm font-medium tracking-wide uppercase text-muted-foreground"
+      },
+      "imports": [
+        "https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&display=swap"
+      ]
+    },
+    "colors": {
+      "palette": {
+        "primary": {
+          "DEFAULT": "hsl(215, 100%, 45%)",
+          "foreground": "hsl(0, 0%, 100%)",
+          "name": "Electric Cobalt"
+        },
+        "secondary": {
+          "DEFAULT": "hsl(210, 40%, 96%)",
+          "foreground": "hsl(222, 47%, 11%)",
+          "name": "Ice Grey"
+        },
+        "accent": {
+          "DEFAULT": "hsl(142, 70%, 45%)",
+          "foreground": "hsl(0, 0%, 100%)",
+          "name": "Turf Green"
+        },
+        "background": "hsl(0, 0%, 100%)",
+        "foreground": "hsl(222, 47%, 11%)",
+        "muted": {
+          "DEFAULT": "hsl(210, 20%, 96%)",
+          "foreground": "hsl(215, 20%, 65%)"
+        },
+        "border": "hsl(214, 32%, 91%)",
+        "card": {
+          "DEFAULT": "hsl(0, 0%, 100%)",
+          "foreground": "hsl(222, 47%, 11%)"
+        }
+      },
+      "gradients": {
+        "hero": "bg-gradient-to-r from-blue-600 to-blue-800",
+        "subtle": "bg-gradient-to-b from-slate-50 to-white"
+      },
+      "semantic": {
+        "success": "text-green-600 bg-green-50 border-green-200",
+        "warning": "text-amber-600 bg-amber-50 border-amber-200",
+        "error": "text-red-600 bg-red-50 border-red-200",
+        "available": "bg-emerald-500 text-white hover:bg-emerald-600",
+        "booked": "bg-slate-200 text-slate-500 cursor-not-allowed"
+      }
+    },
+    "layout": {
+      "container": "container mx-auto px-4 md:px-8 max-w-7xl",
+      "spacing": {
+        "section": "py-24 md:py-32",
+        "element": "gap-8"
+      },
+      "grids": {
+        "hero_grid": "grid grid-cols-1 lg:grid-cols-12 gap-12 items-center",
+        "bento_grid": "grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-6",
+        "dashboard_grid": "grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-0 h-screen overflow-hidden"
+      },
+      "border_radius": {
+        "card": "rounded-xl",
+        "button": "rounded-md",
+        "input": "rounded-md"
+      }
+    },
+    "components": {
+      "buttons": {
+        "primary": "bg-primary text-primary-foreground hover:bg-blue-700 shadow-[0_4px_14px_0_rgba(0,118,255,0.39)] hover:shadow-[0_6px_20px_rgba(0,118,255,0.23)] transition-all duration-200 font-bold uppercase tracking-wider text-sm py-3 px-8",
+        "secondary": "bg-white text-foreground border-2 border-slate-100 hover:border-slate-300 hover:bg-slate-50 transition-all duration-200 font-semibold py-3 px-8",
+        "ghost": "hover:bg-slate-100 text-slate-600 hover:text-foreground transition-colors font-medium"
+      },
+      "cards": {
+        "feature": "bg-white border border-slate-100 shadow-sm hover:shadow-md hover:border-blue-100 transition-all duration-300 p-8 flex flex-col items-start",
+        "booking": "bg-white border border-slate-200 shadow-none hover:border-primary transition-colors p-4 relative overflow-hidden group"
+      },
+      "inputs": {
+        "default": "h-12 border-slate-200 focus:border-primary focus:ring-2 focus:ring-blue-100 transition-all bg-slate-50/50"
+      },
+      "navigation": {
+        "wrapper": "fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-100",
+        "link": "text-sm font-semibold text-slate-600 hover:text-primary transition-colors uppercase tracking-wide"
+      }
+    },
+    "visual_enhancers": {
+      "shadows": {
+        "sm": "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+        "hover": "0 10px 40px -10px rgba(0,0,0,0.08)"
+      },
+      "glass": "bg-white/70 backdrop-blur-xl border border-white/20 shadow-sm",
+      "borders": "border border-slate-200",
+      "textures": {
+        "dot_pattern": "bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]"
+      }
+    },
+    "motion": {
+      "transitions": {
+        "default": "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+        "slow": "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)"
+      },
+      "animations": {
+        "hover_lift": "hover:-translate-y-1 transition-transform duration-300",
+        "fade_in": "animate-in fade-in zoom-in-95 duration-500",
+        "slide_up": "animate-in slide-in-from-bottom-4 fade-in duration-700"
+      }
+    }
+  },
+  "assets": {
+    "images": {
+      "hero_bg": {
+        "url": "https://images.pexels.com/photos/29661256/pexels-photo-29661256.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "alt": "Intense sports action",
+        "description": "High energy soccer match, use with heavy overlay for hero background"
+      },
+      "padel_action": {
+        "url": "https://images.pexels.com/photos/33641987/pexels-photo-33641987.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "alt": "Padel player ready to serve",
+        "category": "facilities"
+      },
+      "padel_court": {
+        "url": "https://images.pexels.com/photos/35248387/pexels-photo-35248387.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "alt": "Indoor padel court view",
+        "category": "booking_card"
+      },
+      "soccer_field": {
+        "url": "https://images.unsplash.com/photo-1623583579527-dcea2a876454?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2ODl8MHwxfHNlYXJjaHwxfHxzb2NjZXIlMjBmb290YmFsbCUyMDctYS1zaWRlJTIwbWF0Y2glMjBncmFzc3xlbnwwfHx8fDE3NzE2Mjk4MzF8MA&ixlib=rb-4.1.0&q=85",
+        "alt": "Green soccer field",
+        "category": "facilities"
+      },
+      "building_modern": {
+        "url": "https://images.pexels.com/photos/18435276/pexels-photo-18435276.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "alt": "Modern sports center exterior",
+        "category": "auth_page"
+      }
+    },
+    "icons": {
+      "library": "lucide-react",
+      "style": "Stroke width 1.5px, size 20px for UI, 32px for Features"
+    }
+  },
+  "pages": {
+    "landing": {
+      "sections": [
+        "Hero: Split layout. Left: Typography 'PLAY LIKE A PRO', Right: Dynamic Image Grid.",
+        "Features: 3-Col Grid. Icons + Bold Text. 'Professional Padel', 'FIFA Grade Turf', 'Online Booking'.",
+        "Courts Preview: Large cards with images + 'Book Now' button overlay.",
+        "CTA: Full width 'Ready to Play?' section with blue gradient background."
+      ],
+      "layout_rules": "Use generous whitespace (py-24). Avoid centering text unless it is a small caption."
+    },
+    "auth": {
+      "layout": "Split screen. Left: Login Form (Clean, White). Right: Full height Image (Building/Action) with blue overlay.",
+      "style": "Minimalist input fields, strong primary button."
+    },
+    "dashboard_user": {
+      "layout": "Sidebar navigation (Collapsible). Main content: 'My Bookings' (Card List) + 'New Booking' (Calendar).",
+      "components": "Use 'Card' for booking history. Use 'Calendar' (Shadcn) for date selection. Use 'Badge' for status (Confirmed/Pending)."
+    },
+    "booking_flow": {
+      "layout": "Step-by-step wizard or Single Page App.",
+      "steps": "1. Select Sport (Visual Cards) -> 2. Select Date (Calendar) -> 3. Select Time (Grid of slots) -> 4. Confirm.",
+      "slot_design": "Grid of buttons. Available: Green outline. Selected: Solid Blue. Booked: Grayed out."
+    },
+    "dashboard_admin": {
+      "layout": "Dense data grid. Table view for bookings. Filter bar on top.",
+      "features": "Quick actions to cancel/edit. Overview stats cards (Total Bookings, Revenue) at top."
+    }
+  },
+  "universal_guidelines": [
+    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients",
+    "Don't make generic centered layouts, simplistic gradients, and uniform styling.",
+    "Create depth through layered design elements with z-index hierarchy",
+    "Use glass-morphism effects with backdrop filters (12-24px blur)",
+    "You MUST NOT apply universal transition. Eg: transition: all. This results in breaking transforms.",
+    "You MUST NOT center align the app container, ie do not add .App { text-align: center; } in the css file.",
+    "Always use modern button styles like pill-shaped, or sharp button with interaction animations & color relevant to the app style",
+    "NEVER: use AI assistant Emoji characters for icons.",
+    "Every interaction needs micro-animations - hover states, transitions, entrance animations.",
+    "Use 2-3x more spacing than feels comfortable.",
+    "Subtle grain textures, noise overlays, custom cursors: separates good from extraordinary.",
+    "Main agent relies on these image URLs. Missing categories = main agent will use placeholder text which is FORBIDDEN",
+    "Prioritize using pre-existing components from src/components/ui when applicable",
+    "Components MUST use named exports",
+    "Pages MUST use default exports",
+    "Use sonner for toasts"
+  ],
+  "instructions_to_main_agent": [
+    "Install 'lucide-react' if not present.",
+    "Update 'tailwind.config.js' with the custom colors defined in this JSON.",
+    "Add the Google Fonts import to 'index.css'.",
+    "Create a layout wrapper 'Layout.jsx' that handles the Navbar and Footer.",
+    "Use 'react-router-dom' for navigation structure.",
+    "Ensure the Calendar component handles the 90min (Padel) vs 60min (Football) logic correctly.",
+    "For the Admin Dashboard, use a dense table layout with Shadcn Table component."
+  ]
+}
