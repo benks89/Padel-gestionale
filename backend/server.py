@@ -185,27 +185,43 @@ async def get_availability(court_id: str, data: str):
     current_time = start_hour * 60 + start_minute
     end_time = end_hour * 60 + end_minute
     
+    def time_to_minutes(time_str):
+        h, m = map(int, time_str.split(':'))
+        return h * 60 + m
+    
+    def check_overlap(start1, end1, start2, end2):
+        return start1 < end2 and start2 < end1
+    
     while current_time < end_time:
         hour = current_time // 60
         minute = current_time % 60
         ora_inizio = f"{hour:02d}:{minute:02d}"
         
         next_time = current_time + slot_duration
+        if next_time > end_time:
+            break
         next_hour = next_time // 60
         next_minute = next_time % 60
         ora_fine = f"{next_hour:02d}:{next_minute:02d}"
         
-        is_booked = any(
-            slot["ora_inizio"] == ora_inizio for slot in booked_slots
-        )
+        is_available = True
+        for booked in booked_slots:
+            booked_start = time_to_minutes(booked["ora_inizio"])
+            booked_end = time_to_minutes(booked["ora_fine"])
+            slot_start = current_time
+            slot_end = next_time
+            
+            if check_overlap(slot_start, slot_end, booked_start, booked_end):
+                is_available = False
+                break
         
         all_slots.append({
             "ora_inizio": ora_inizio,
             "ora_fine": ora_fine,
-            "available": not is_booked
+            "available": is_available
         })
         
-        current_time = next_time
+        current_time += 30
     
     return {"slots": all_slots}
 
