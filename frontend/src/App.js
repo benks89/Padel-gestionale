@@ -52,6 +52,14 @@ function App() {
             } 
           />
           <Route 
+            path="/admin/calendar" 
+            element={
+              <ProtectedRoute adminOnly>
+                <AdminCalendar />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
             path="/booking" 
             element={
               <ProtectedRoute>
