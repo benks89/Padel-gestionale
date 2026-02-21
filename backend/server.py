@@ -464,6 +464,36 @@ async def mark_all_read(current_user: dict = Depends(get_admin_user)):
     )
     return {"message": "Tutte le notifiche segnate come lette"}
 
+# Push Notification Endpoints
+@api_router.get("/push/vapid-public-key")
+async def get_vapid_public_key():
+    return {"publicKey": VAPID_PUBLIC_KEY}
+
+@api_router.post("/push/subscribe")
+async def subscribe_push(subscription: PushSubscription, current_user: dict = Depends(get_admin_user)):
+    # Check if subscription already exists
+    existing = await db.push_subscriptions.find_one({"endpoint": subscription.endpoint})
+    if existing:
+        # Update existing subscription
+        await db.push_subscriptions.update_one(
+            {"endpoint": subscription.endpoint},
+            {"$set": {"keys": subscription.keys, "admin_email": current_user["email"], "updated_at": datetime.now(timezone.utc).isoformat()}}
+        )
+    else:
+        # Create new subscription
+        await db.push_subscriptions.insert_one({
+            "endpoint": subscription.endpoint,
+            "keys": subscription.keys,
+            "admin_email": current_user["email"],
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+    return {"message": "Sottoscrizione push attivata"}
+
+@api_router.post("/push/unsubscribe")
+async def unsubscribe_push(subscription: PushSubscription, current_user: dict = Depends(get_admin_user)):
+    await db.push_subscriptions.delete_one({"endpoint": subscription.endpoint})
+    return {"message": "Sottoscrizione push disattivata"}
+
 @api_router.get("/courts", response_model=List[Court])
 async def get_courts():
     courts = await db.courts.find({}, {"_id": 0}).to_list(100)
