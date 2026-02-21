@@ -1,0 +1,66 @@
+{
+  "summary": "Completed testing of customizable booking duration feature. Backend API fully functional (11/11 tests passed). Frontend duration dropdowns working correctly in both create and edit modals with all 6 duration options and correct end time calculation.",
+  
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+
+  "passed_tests": [
+    "Backend: Admin login returns admin role",
+    "Backend: Courts endpoint returns all 5 courts (4 padel + 1 calcio)",
+    "Backend: Admin create booking with 30min duration (08:00-08:30)",
+    "Backend: Admin create booking with 60min duration (09:00-10:00)",
+    "Backend: Admin create booking with 90min duration (10:00-11:30)",
+    "Backend: Admin create booking with 120min duration (12:00-14:00)",
+    "Backend: Admin create booking with 150min duration (07:30-10:00)",
+    "Backend: Admin create booking with 180min duration (17:00-20:00)",
+    "Backend: Booking without durata uses court default (90min for padel)",
+    "Backend: Update booking duration changes end time correctly",
+    "Backend: Update booking time and duration together works",
+    "Frontend: Admin login successful",
+    "Frontend: Calendar view loads with existing bookings",
+    "Frontend: Create booking dialog opens on empty slot click",
+    "Frontend: Duration dropdown visible in create modal with all 6 options",
+    "Frontend: Duration selection updates end time preview correctly",
+    "Frontend: Edit booking dialog opens on existing booking click",
+    "Frontend: Duration dropdown visible in edit modal with all 6 options",
+    "Frontend: Edit duration selection updates end time correctly"
+  ],
+
+  "test_report_links": [
+    "/app/backend/tests/test_booking_duration.py",
+    "/app/test_reports/pytest/pytest_duration_results.xml"
+  ],
+
+  "action_items": [],
+
+  "critical_code_review_comments": [],
+
+  "updated_files": [
+    "/app/backend/tests/test_booking_duration.py"
+  ],
+
+  "success_rate": {
+    "backend": "100%",
+    "frontend": "100%"
+  },
+
+  "test_credentials": {
+    "admin_email": "admin@sportcenter.com",
+    "admin_password": "admin123"
+  },
+
+  "seed_data_creation": "Test users created with prefix 'test_duration_' - cleaned up after tests",
+
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+
+  "context_for_next_testing_agent": "Duration customization feature is fully implemented and working. Backend supports durata field (30, 60, 90, 120, 150, 180 minutes) in BookingCreate and BookingUpdate models. Frontend AdminCalendar.js has durationOptions array with 6 options. Default duration is 90 min (1h 30min). The ora_fine (end time) is correctly calculated based on ora_inizio + durata."
+}
