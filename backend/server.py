@@ -488,8 +488,12 @@ async def update_booking(booking_id: str, update_data: BookingUpdate, current_us
     if not booking:
         raise HTTPException(status_code=404, detail="Prenotazione non trovata")
     
-    if booking["user_email"] != current_user["email"] and current_user.get("role") != "admin":
+    is_admin = current_user.get("role") == "admin"
+    if booking["user_email"] != current_user["email"] and not is_admin:
         raise HTTPException(status_code=403, detail="Non autorizzato")
+    
+    if is_admin and current_user.get("admin_role") == "viewer":
+        raise HTTPException(status_code=403, detail="Non hai i permessi per modificare")
     
     update_fields = {}
     if update_data.data:
@@ -509,6 +513,16 @@ async def update_booking(booking_id: str, update_data: BookingUpdate, current_us
     if update_fields:
         await db.bookings.update_one({"id": booking_id}, {"$set": update_fields})
         booking.update(update_fields)
+        
+        if is_admin:
+            await log_activity(
+                action="update",
+                entity_type="booking",
+                entity_id=booking_id,
+                admin_email=current_user["email"],
+                admin_nome=current_user["nome"],
+                details=f"Modificata prenotazione di {booking['user_nome']} per {booking['court_nome']} il {booking.get('data', update_data.data)}"
+            )
     
     return Booking(**booking)
 
@@ -518,14 +532,29 @@ async def delete_booking(booking_id: str, current_user: dict = Depends(get_curre
     if not booking:
         raise HTTPException(status_code=404, detail="Prenotazione non trovata")
     
-    if booking["user_email"] != current_user["email"] and current_user.get("role") != "admin":
+    is_admin = current_user.get("role") == "admin"
+    if booking["user_email"] != current_user["email"] and not is_admin:
         raise HTTPException(status_code=403, detail="Non autorizzato")
     
+    if is_admin and current_user.get("admin_role") == "viewer":
+        raise HTTPException(status_code=403, detail="Non hai i permessi per eliminare")
+    
     await db.bookings.delete_one({"id": booking_id})
+    
+    if is_admin:
+        await log_activity(
+            action="delete",
+            entity_type="booking",
+            entity_id=booking_id,
+            admin_email=current_user["email"],
+            admin_nome=current_user["nome"],
+            details=f"Cancellata prenotazione di {booking['user_nome']} per {booking['court_nome']} il {booking['data']} alle {booking['ora_inizio']}"
+        )
+    
     return {"message": "Prenotazione cancellata"}
 
 @api_router.post("/admin/bookings", response_model=Booking)
-async def admin_create_booking(booking_data: BookingCreate, user_email: str, current_user: dict = Depends(get_admin_user)):
+async def admin_create_booking(booking_data: BookingCreate, user_email: str, current_user: dict = Depends(get_editor_admin)):
     user = await db.users.find_one({"email": user_email}, {"_id": 0})
     if not user:
         raise HTTPException(status_code=404, detail="Utente non trovato")
@@ -574,10 +603,21 @@ async def admin_create_booking(booking_data: BookingCreate, user_email: str, cur
         "data": booking_data.data,
         "ora_inizio": booking_data.ora_inizio,
         "ora_fine": ora_fine,
-        "created_at": datetime.now(timezone.utc).isoformat()
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "created_by_admin": current_user["email"],
+        "created_by_admin_nome": current_user["nome"]
     }
     
     await db.bookings.insert_one(booking_doc)
+    
+    await log_activity(
+        action="create",
+        entity_type="booking",
+        entity_id=booking_id,
+        admin_email=current_user["email"],
+        admin_nome=current_user["nome"],
+        details=f"Creata prenotazione per {user['nome']} - {court['nome']} il {booking_data.data} alle {booking_data.ora_inizio}"
+    )
     
     return Booking(**{k: v for k, v in booking_doc.items() if k != "_id"})
 
