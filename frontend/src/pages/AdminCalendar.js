@@ -174,23 +174,39 @@ export default function AdminCalendar() {
   };
 
   const handleCreateBooking = async () => {
-    if (!bookingForm.name || !bookingForm.email) {
-      toast.error('Inserisci nome ed email');
-      return;
+    let userEmail = bookingForm.email;
+    
+    if (bookingForm.isNewUser) {
+      if (!bookingForm.name || !bookingForm.email) {
+        toast.error('Inserisci nome ed email');
+        return;
+      }
+      
+      try {
+        await axios.post(`${API_URL}/auth/register`, {
+          email: bookingForm.email,
+          password: 'temp123',
+          nome: bookingForm.name,
+          telefono: bookingForm.telefono || null
+        });
+      } catch (error) {
+        if (error.response?.status !== 400) {
+          toast.error('Errore nella creazione utente');
+          return;
+        }
+      }
+    } else {
+      if (!bookingForm.selectedUser) {
+        toast.error('Seleziona un cliente');
+        return;
+      }
+      const selectedUserData = users.find(u => u.email === bookingForm.selectedUser);
+      userEmail = selectedUserData.email;
     }
 
     try {
-      const userRes = await axios.get(`${API_URL}/auth/me`);
-      if (!userRes.data) {
-        const registerRes = await axios.post(`${API_URL}/auth/register`, {
-          email: bookingForm.email,
-          password: 'temp123',
-          nome: bookingForm.name
-        });
-      }
-
       await axios.post(
-        `${API_URL}/admin/bookings?user_email=${bookingForm.email}`,
+        `${API_URL}/admin/bookings?user_email=${userEmail}`,
         {
           court_id: selectedSlot.courtId,
           data: format(selectedDate, 'yyyy-MM-dd'),
@@ -202,32 +218,7 @@ export default function AdminCalendar() {
       setShowDialog(false);
       fetchData();
     } catch (error) {
-      if (error.response?.status === 404) {
-        try {
-          await axios.post(`${API_URL}/auth/register`, {
-            email: bookingForm.email,
-            password: 'temp123',
-            nome: bookingForm.name
-          });
-          
-          await axios.post(
-            `${API_URL}/admin/bookings?user_email=${bookingForm.email}`,
-            {
-              court_id: selectedSlot.courtId,
-              data: format(selectedDate, 'yyyy-MM-dd'),
-              ora_inizio: selectedSlot.timeSlot
-            }
-          );
-          
-          toast.success('Prenotazione creata');
-          setShowDialog(false);
-          fetchData();
-        } catch (err) {
-          toast.error(err.response?.data?.detail || 'Errore nella creazione');
-        }
-      } else {
-        toast.error(error.response?.data?.detail || 'Errore nella creazione');
-      }
+      toast.error(error.response?.data?.detail || 'Errore nella creazione');
     }
   };
 
