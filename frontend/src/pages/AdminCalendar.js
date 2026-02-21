@@ -317,8 +317,8 @@ export default function AdminCalendar() {
                     {timeSlots.map((time, idx) => (
                       <div
                         key={time}
-                        className="h-[60px] border-b border-slate-200 flex items-center justify-center text-sm text-slate-600 font-medium"
-                        style={{ height: '60px' }}
+                        className="h-[35px] border-b border-slate-200 flex items-center justify-center text-xs text-slate-600 font-medium"
+                        style={{ height: '35px' }}
                       >
                         {time}
                       </div>
@@ -334,10 +334,10 @@ export default function AdminCalendar() {
                         return (
                           <div
                             key={time}
-                            className="h-[60px] border-b border-slate-200 hover:bg-blue-50 cursor-pointer transition-colors"
+                            className="h-[35px] border-b border-slate-200 hover:bg-blue-50 cursor-pointer transition-colors"
                             onClick={() => !booking && handleSlotClick(court.id, time)}
                             data-testid={`slot-${court.id}-${time}`}
-                            style={{ height: '60px' }}
+                            style={{ height: '35px' }}
                           />
                         );
                       })}
