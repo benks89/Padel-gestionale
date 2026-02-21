@@ -20,10 +20,17 @@ export default function AdminCalendar() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [bookings, setBookings] = useState([]);
   const [courts, setCourts] = useState([]);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showDialog, setShowDialog] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
-  const [bookingForm, setBookingForm] = useState({ name: '', email: '' });
+  const [bookingForm, setBookingForm] = useState({ 
+    selectedUser: '', 
+    name: '', 
+    email: '', 
+    telefono: '',
+    isNewUser: false 
+  });
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [editingBooking, setEditingBooking] = useState(null);
   const [editForm, setEditForm] = useState({
