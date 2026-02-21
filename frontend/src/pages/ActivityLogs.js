@@ -8,6 +8,7 @@ import { LogOut, Activity, ChevronLeft, Plus, Edit, Trash2, User, Calendar } fro
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
+import NotificationBell from '@/components/NotificationBell';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
