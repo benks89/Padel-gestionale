@@ -704,6 +704,17 @@ async def admin_create_booking(booking_data: BookingCreate, user_email: str, cur
         details=f"Creata prenotazione per {user['nome']} - {court['nome']} il {booking_data.data} alle {booking_data.ora_inizio}"
     )
     
+    # Create notification for all admins (admin booking)
+    await create_notification(
+        notification_type="booking_created",
+        title="Nuova Prenotazione (Admin)",
+        message=f"{current_user['nome']} ha creato prenotazione per {user['nome']} - {court['nome']} il {booking_data.data} alle {booking_data.ora_inizio}",
+        created_by=current_user["email"],
+        created_by_nome=current_user["nome"],
+        is_admin_action=True,
+        booking_id=booking_id
+    )
+    
     return Booking(**{k: v for k, v in booking_doc.items() if k != "_id"})
 
 app.include_router(api_router)
