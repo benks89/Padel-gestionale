@@ -57,6 +57,7 @@ class BookingCreate(BaseModel):
     court_id: str
     data: str
     ora_inizio: str
+    durata: Optional[int] = None
 
 class BookingUpdate(BaseModel):
     data: Optional[str] = None
