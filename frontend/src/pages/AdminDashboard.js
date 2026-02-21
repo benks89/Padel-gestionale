@@ -4,10 +4,17 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
 import axios from 'axios';
 import { toast } from 'sonner';
-import { Calendar, Clock, Trash2, LogOut, Filter, CalendarDays } from 'lucide-react';
+import { Calendar, Clock, Trash2, LogOut, Filter, CalendarDays, Users, Activity, Shield } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
+
+const roleLabels = {
+  super_admin: 'Super Admin',
+  admin: 'Admin',
+  viewer: 'Viewer'
+};
 
 export default function AdminDashboard() {
   const { user, logout } = useAuth();
@@ -17,6 +24,9 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [filterCourt, setFilterCourt] = useState('all');
   const [courts, setCourts] = useState([]);
+
+  const isViewer = user?.admin_role === 'viewer';
+  const isSuperAdmin = user?.admin_role === 'super_admin';
 
   useEffect(() => {
     fetchData();
@@ -87,9 +97,33 @@ export default function AdminDashboard() {
                 data-testid="calendar-view-btn"
               >
                 <CalendarDays className="w-4 h-4 mr-2" />
-                Vista Calendario
+                Calendario
               </Button>
-              <span className="text-sm text-slate-600">Admin: <strong>{user?.nome}</strong></span>
+              {isSuperAdmin && (
+                <Button 
+                  variant="ghost" 
+                  onClick={() => navigate('/admin/management')}
+                  data-testid="admin-management-btn"
+                >
+                  <Users className="w-4 h-4 mr-2" />
+                  Gestione Admin
+                </Button>
+              )}
+              <Button 
+                variant="ghost" 
+                onClick={() => navigate('/admin/logs')}
+                data-testid="activity-logs-btn"
+              >
+                <Activity className="w-4 h-4 mr-2" />
+                Log Attività
+              </Button>
+              <div className="flex items-center gap-2 text-sm text-slate-600">
+                <Badge variant="outline" className="flex items-center gap-1">
+                  <Shield className="w-3 h-3" />
+                  {roleLabels[user?.admin_role] || 'Admin'}
+                </Badge>
+                <span><strong>{user?.nome}</strong></span>
+              </div>
               <Button variant="ghost" onClick={handleLogout} size="sm" data-testid="admin-logout-btn">
                 <LogOut className="w-4 h-4" />
               </Button>
@@ -137,7 +171,7 @@ export default function AdminDashboard() {
                   </SelectContent>
                 </Select>
               </div>
-              <Button onClick={() => navigate('/booking')} data-testid="admin-new-booking-btn">
+              <Button onClick={() => navigate('/booking')} data-testid="admin-new-booking-btn" disabled={isViewer}>
                 Nuova Prenotazione
               </Button>
             </div>
@@ -191,15 +225,17 @@ export default function AdminDashboard() {
                         </div>
                       </td>
                       <td className="py-4">
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={() => handleDelete(booking.id)}
-                          className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                          data-testid={`admin-delete-${booking.id}`}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                        {!isViewer && (
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={() => handleDelete(booking.id)}
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                            data-testid={`admin-delete-${booking.id}`}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        )}
                       </td>
                     </tr>
                   ))}
