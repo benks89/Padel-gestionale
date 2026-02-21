@@ -62,6 +62,7 @@ class BookingCreate(BaseModel):
 class BookingUpdate(BaseModel):
     data: Optional[str] = None
     ora_inizio: Optional[str] = None
+    durata: Optional[int] = None
 
 class Booking(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -313,11 +314,16 @@ async def update_booking(booking_id: str, update_data: BookingUpdate, current_us
     update_fields = {}
     if update_data.data:
         update_fields["data"] = update_data.data
-    if update_data.ora_inizio:
+    
+    ora_inizio = update_data.ora_inizio if update_data.ora_inizio else booking["ora_inizio"]
+    
+    if update_data.ora_inizio or update_data.durata:
         court = await db.courts.find_one({"id": booking["court_id"]}, {"_id": 0})
-        hour, minute = map(int, update_data.ora_inizio.split(':'))
-        total_minutes = hour * 60 + minute + court["slot_duration"]
-        update_fields["ora_inizio"] = update_data.ora_inizio
+        duration = update_data.durata if update_data.durata else court["slot_duration"]
+        hour, minute = map(int, ora_inizio.split(':'))
+        total_minutes = hour * 60 + minute + duration
+        if update_data.ora_inizio:
+            update_fields["ora_inizio"] = update_data.ora_inizio
         update_fields["ora_fine"] = f"{total_minutes // 60:02d}:{total_minutes % 60:02d}"
     
     if update_fields:
@@ -348,8 +354,10 @@ async def admin_create_booking(booking_data: BookingCreate, user_email: str, cur
     if not court:
         raise HTTPException(status_code=404, detail="Campo non trovato")
     
+    duration = booking_data.durata if booking_data.durata else court["slot_duration"]
+    
     hour, minute = map(int, booking_data.ora_inizio.split(':'))
-    total_minutes = hour * 60 + minute + court["slot_duration"]
+    total_minutes = hour * 60 + minute + duration
     ora_fine = f"{total_minutes // 60:02d}:{total_minutes % 60:02d}"
     
     def time_to_minutes(time_str):
