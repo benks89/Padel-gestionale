@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
+import NotificationBell from '@/components/NotificationBell';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
