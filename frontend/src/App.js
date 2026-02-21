@@ -6,6 +6,8 @@ import Auth from '@/pages/Auth';
 import UserDashboard from '@/pages/UserDashboard';
 import AdminDashboard from '@/pages/AdminDashboard';
 import AdminCalendar from '@/pages/AdminCalendar';
+import AdminManagement from '@/pages/AdminManagement';
+import ActivityLogs from '@/pages/ActivityLogs';
 import Booking from '@/pages/Booking';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import '@/App.css';
@@ -56,6 +58,22 @@ function App() {
             element={
               <ProtectedRoute adminOnly>
                 <AdminCalendar />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/management" 
+            element={
+              <ProtectedRoute adminOnly>
+                <AdminManagement />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/logs" 
+            element={
+              <ProtectedRoute adminOnly>
+                <ActivityLogs />
               </ProtectedRoute>
             } 
           />
