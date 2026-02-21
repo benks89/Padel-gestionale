@@ -93,6 +93,7 @@ export default function ActivityLogs() {
                 Dashboard
               </Button>
               <span className="text-sm text-slate-600">Admin: <strong>{user?.nome}</strong></span>
+              <NotificationBell />
               <Button variant="ghost" onClick={handleLogout} size="sm" data-testid="admin-logout-btn">
                 <LogOut className="w-4 h-4" />
               </Button>
