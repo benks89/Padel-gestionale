@@ -595,6 +595,7 @@ export default function AdminCalendar() {
                 <Select 
                   value={editForm.ora_inizio} 
                   onValueChange={(value) => setEditForm({ ...editForm, ora_inizio: value })}
+                  disabled={isViewer}
                 >
                   <SelectTrigger data-testid="edit-time-select">
                     <SelectValue />
@@ -614,6 +615,7 @@ export default function AdminCalendar() {
                 <Select 
                   value={editForm.durata.toString()} 
                   onValueChange={(value) => setEditForm({ ...editForm, durata: parseInt(value) })}
+                  disabled={isViewer}
                 >
                   <SelectTrigger data-testid="edit-duration-select">
                     <SelectValue />
