@@ -347,7 +347,7 @@ export default function AdminCalendar() {
                         .map(booking => (
                           <div
                             key={booking.id}
-                            className="absolute left-1 right-1 bg-blue-400 text-white rounded-md p-2 shadow-md cursor-pointer hover:bg-blue-500 transition-colors overflow-hidden"
+                            className="absolute left-1 right-1 bg-blue-400 text-white rounded p-1 shadow-md cursor-pointer hover:bg-blue-500 transition-colors overflow-hidden"
                             style={{
                               top: `${getBookingTop(booking)}px`,
                               height: `${getBookingHeight(booking)}px`
@@ -355,9 +355,8 @@ export default function AdminCalendar() {
                             onClick={() => handleSlotClick(court.id, booking.ora_inizio)}
                             data-testid={`booking-${booking.id}`}
                           >
-                            <div className="text-xs font-semibold">{booking.ora_inizio} - {booking.ora_fine}</div>
-                            <div className="text-xs font-medium mt-1">{booking.user_nome}</div>
-                            <div className="text-xs opacity-90 mt-0.5">{booking.court_tipo === 'padel' ? '1h30' : '1h'}</div>
+                            <div className="text-[10px] font-semibold leading-tight">{booking.ora_inizio} - {booking.ora_fine}</div>
+                            <div className="text-[10px] font-medium leading-tight mt-0.5">{booking.user_nome}</div>
                           </div>
                         ))}
                     </div>
