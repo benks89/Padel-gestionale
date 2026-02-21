@@ -8,6 +8,7 @@ import { Calendar, Clock, Trash2, LogOut, Filter, CalendarDays, Users, Activity,
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import NotificationBell from '@/components/NotificationBell';
+import PushNotificationToggle from '@/components/PushNotificationToggle';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
