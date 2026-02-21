@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
+import NotificationBell from '@/components/NotificationBell';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
