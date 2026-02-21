@@ -370,30 +370,92 @@ export default function AdminCalendar() {
       </div>
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        <DialogContent data-testid="create-booking-dialog">
+        <DialogContent data-testid="create-booking-dialog" className="max-w-lg">
           <DialogHeader>
             <DialogTitle>Nuova Prenotazione</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label>Nome Cliente</Label>
-              <Input
-                placeholder="Mario Rossi"
-                value={bookingForm.name}
-                onChange={(e) => setBookingForm({ ...bookingForm, name: e.target.value })}
-                data-testid="booking-name-input"
-              />
+            <div className="flex items-center gap-2 mb-4">
+              <Button
+                type="button"
+                variant={!bookingForm.isNewUser ? "default" : "outline"}
+                onClick={() => setBookingForm({ ...bookingForm, isNewUser: false, name: '', email: '', telefono: '' })}
+                className="flex-1"
+                data-testid="existing-user-btn"
+              >
+                Cliente Esistente
+              </Button>
+              <Button
+                type="button"
+                variant={bookingForm.isNewUser ? "default" : "outline"}
+                onClick={() => setBookingForm({ ...bookingForm, isNewUser: true, selectedUser: '' })}
+                className="flex-1"
+                data-testid="new-user-btn"
+              >
+                Nuovo Cliente
+              </Button>
             </div>
-            <div className="space-y-2">
-              <Label>Email Cliente</Label>
-              <Input
-                type="email"
-                placeholder="mario@esempio.it"
-                value={bookingForm.email}
-                onChange={(e) => setBookingForm({ ...bookingForm, email: e.target.value })}
-                data-testid="booking-email-input"
-              />
-            </div>
+
+            {!bookingForm.isNewUser ? (
+              <div className="space-y-2">
+                <Label>Seleziona Cliente</Label>
+                <Select 
+                  value={bookingForm.selectedUser} 
+                  onValueChange={(value) => setBookingForm({ ...bookingForm, selectedUser: value })}
+                >
+                  <SelectTrigger data-testid="select-existing-user">
+                    <SelectValue placeholder="Seleziona cliente..." />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[300px]">
+                    {users.map(user => (
+                      <SelectItem key={user.email} value={user.email}>
+                        <div className="flex flex-col">
+                          <span className="font-medium">{user.nome}</span>
+                          <span className="text-xs text-slate-500">{user.email}</span>
+                          {user.telefono && <span className="text-xs text-slate-500">{user.telefono}</span>}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {users.length === 0 && (
+                  <p className="text-sm text-slate-500">Nessun cliente registrato. Crea un nuovo cliente.</p>
+                )}
+              </div>
+            ) : (
+              <>
+                <div className="space-y-2">
+                  <Label>Nome Cliente *</Label>
+                  <Input
+                    placeholder="Mario Rossi"
+                    value={bookingForm.name}
+                    onChange={(e) => setBookingForm({ ...bookingForm, name: e.target.value })}
+                    data-testid="booking-name-input"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Email Cliente *</Label>
+                  <Input
+                    type="email"
+                    placeholder="mario@esempio.it"
+                    value={bookingForm.email}
+                    onChange={(e) => setBookingForm({ ...bookingForm, email: e.target.value })}
+                    data-testid="booking-email-input"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Telefono (opzionale)</Label>
+                  <Input
+                    type="tel"
+                    placeholder="+39 333 1234567"
+                    value={bookingForm.telefono}
+                    onChange={(e) => setBookingForm({ ...bookingForm, telefono: e.target.value })}
+                    data-testid="booking-telefono-input"
+                  />
+                </div>
+              </>
+            )}
+
             {selectedSlot && (
               <div className="bg-slate-50 p-4 rounded-md text-sm">
                 <div><strong>Campo:</strong> {courts.find(c => c.id === selectedSlot.courtId)?.nome}</div>
