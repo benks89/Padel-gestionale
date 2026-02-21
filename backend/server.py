@@ -79,6 +79,19 @@ class ActivityLog(BaseModel):
     details: str
     timestamp: str
 
+class Notification(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    type: str  # booking_created, booking_updated, booking_deleted
+    title: str
+    message: str
+    booking_id: Optional[str] = None
+    created_by: str  # email of who triggered the notification
+    created_by_nome: str
+    is_admin_action: bool = False
+    timestamp: str
+    read_by: List[str] = []  # list of admin emails who read it
+
 class Court(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str
