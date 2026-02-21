@@ -204,13 +204,18 @@ async def login(credentials: UserLogin):
     if not user or not verify_password(credentials.password, user["password_hash"]):
         raise HTTPException(status_code=401, detail="Credenziali non valide")
     
+    if user.get("role") == "admin" and user.get("is_active") == False:
+        raise HTTPException(status_code=403, detail="Account admin disabilitato")
+    
     token = create_access_token({"sub": credentials.email})
     return {
         "token": token,
         "user": {
             "email": user["email"],
             "nome": user["nome"],
-            "role": user.get("role", "user")
+            "role": user.get("role", "user"),
+            "admin_role": user.get("admin_role"),
+            "is_active": user.get("is_active", True)
         }
     }
 
@@ -220,8 +225,122 @@ async def get_me(current_user: dict = Depends(get_current_user)):
 
 @api_router.get("/users", response_model=List[User])
 async def get_users(current_user: dict = Depends(get_admin_user)):
-    users = await db.users.find({}, {"_id": 0, "password_hash": 0}).to_list(1000)
+    if current_user.get("admin_role") == "viewer":
+        return []
+    users = await db.users.find({"role": {"$ne": "admin"}}, {"_id": 0, "password_hash": 0}).to_list(1000)
     return users
+
+# Admin Management Endpoints
+@api_router.get("/admin/admins", response_model=List[AdminUser])
+async def get_admins(current_user: dict = Depends(get_admin_user)):
+    admins = await db.users.find({"role": "admin"}, {"_id": 0, "password_hash": 0}).to_list(100)
+    return admins
+
+@api_router.post("/admin/admins", response_model=AdminUser)
+async def create_admin(admin_data: AdminCreate, current_user: dict = Depends(get_super_admin)):
+    existing = await db.users.find_one({"email": admin_data.email})
+    if existing:
+        raise HTTPException(status_code=400, detail="Email già registrata")
+    
+    if admin_data.admin_role not in ["super_admin", "admin", "viewer"]:
+        raise HTTPException(status_code=400, detail="Ruolo non valido")
+    
+    admin_doc = {
+        "email": admin_data.email,
+        "password_hash": hash_password(admin_data.password),
+        "nome": admin_data.nome,
+        "role": "admin",
+        "admin_role": admin_data.admin_role,
+        "is_active": True,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.users.insert_one(admin_doc)
+    
+    await log_activity(
+        action="create",
+        entity_type="admin",
+        entity_id=admin_data.email,
+        admin_email=current_user["email"],
+        admin_nome=current_user["nome"],
+        details=f"Creato admin {admin_data.nome} ({admin_data.email}) con ruolo {admin_data.admin_role}"
+    )
+    
+    return AdminUser(
+        email=admin_data.email,
+        nome=admin_data.nome,
+        role="admin",
+        admin_role=admin_data.admin_role,
+        is_active=True,
+        created_at=admin_doc["created_at"]
+    )
+
+@api_router.put("/admin/admins/{email}")
+async def update_admin(email: str, update_data: AdminUpdate, current_user: dict = Depends(get_super_admin)):
+    admin = await db.users.find_one({"email": email, "role": "admin"})
+    if not admin:
+        raise HTTPException(status_code=404, detail="Admin non trovato")
+    
+    if email == current_user["email"] and update_data.is_active == False:
+        raise HTTPException(status_code=400, detail="Non puoi disabilitare te stesso")
+    
+    update_fields = {}
+    details_parts = []
+    
+    if update_data.nome is not None:
+        update_fields["nome"] = update_data.nome
+        details_parts.append(f"nome: {update_data.nome}")
+    if update_data.admin_role is not None:
+        if update_data.admin_role not in ["super_admin", "admin", "viewer"]:
+            raise HTTPException(status_code=400, detail="Ruolo non valido")
+        update_fields["admin_role"] = update_data.admin_role
+        details_parts.append(f"ruolo: {update_data.admin_role}")
+    if update_data.is_active is not None:
+        update_fields["is_active"] = update_data.is_active
+        details_parts.append(f"attivo: {update_data.is_active}")
+    
+    if update_fields:
+        await db.users.update_one({"email": email}, {"$set": update_fields})
+        
+        await log_activity(
+            action="update",
+            entity_type="admin",
+            entity_id=email,
+            admin_email=current_user["email"],
+            admin_nome=current_user["nome"],
+            details=f"Modificato admin {admin['nome']}: {', '.join(details_parts)}"
+        )
+    
+    updated = await db.users.find_one({"email": email}, {"_id": 0, "password_hash": 0})
+    return updated
+
+@api_router.delete("/admin/admins/{email}")
+async def delete_admin(email: str, current_user: dict = Depends(get_super_admin)):
+    if email == current_user["email"]:
+        raise HTTPException(status_code=400, detail="Non puoi eliminare te stesso")
+    
+    admin = await db.users.find_one({"email": email, "role": "admin"})
+    if not admin:
+        raise HTTPException(status_code=404, detail="Admin non trovato")
+    
+    await db.users.delete_one({"email": email})
+    
+    await log_activity(
+        action="delete",
+        entity_type="admin",
+        entity_id=email,
+        admin_email=current_user["email"],
+        admin_nome=current_user["nome"],
+        details=f"Eliminato admin {admin['nome']} ({email})"
+    )
+    
+    return {"message": "Admin eliminato"}
+
+# Activity Logs Endpoints
+@api_router.get("/admin/activity-logs", response_model=List[ActivityLog])
+async def get_activity_logs(current_user: dict = Depends(get_admin_user), limit: int = 100):
+    logs = await db.activity_logs.find({}, {"_id": 0}).sort("timestamp", -1).to_list(limit)
+    return logs
 
 @api_router.get("/courts", response_model=List[Court])
 async def get_courts():
