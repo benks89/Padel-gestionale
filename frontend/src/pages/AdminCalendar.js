@@ -62,13 +62,15 @@ export default function AdminCalendar() {
     setLoading(true);
     try {
       const dateStr = format(selectedDate, 'yyyy-MM-dd');
-      const [courtsRes, bookingsRes] = await Promise.all([
+      const [courtsRes, bookingsRes, usersRes] = await Promise.all([
         axios.get(`${API_URL}/courts`),
-        axios.get(`${API_URL}/bookings`)
+        axios.get(`${API_URL}/bookings`),
+        axios.get(`${API_URL}/users`)
       ]);
       
       const padelCourts = courtsRes.data.filter(c => c.tipo === 'padel');
       setCourts(padelCourts);
+      setUsers(usersRes.data.filter(u => u.role !== 'admin'));
       
       const dayBookings = bookingsRes.data.filter(b => 
         b.data === dateStr && padelCourts.some(c => c.id === b.court_id)
