@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
 import axios from 'axios';
 import { toast } from 'sonner';
-import { LogOut, ChevronLeft, ChevronRight, Calendar as CalendarIcon, Grid3x3 } from 'lucide-react';
+import { LogOut, ChevronLeft, ChevronRight, Calendar as CalendarIcon, Grid3x3, User } from 'lucide-react';
 import { format, addDays, subDays } from 'date-fns';
 import { it } from 'date-fns/locale';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -13,6 +13,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Badge } from '@/components/ui/badge';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -35,6 +36,8 @@ export default function AdminCalendar() {
     isNewUser: false,
     durata: 90
   });
+
+  const isViewer = user?.admin_role === 'viewer';
 
   const durationOptions = [
     { value: 30, label: '30 min' },
