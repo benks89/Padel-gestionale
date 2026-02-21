@@ -132,6 +132,10 @@ class Booking(BaseModel):
     created_by_admin: Optional[str] = None
     created_by_admin_nome: Optional[str] = None
 
+class PushSubscription(BaseModel):
+    endpoint: str
+    keys: dict
+
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
 
