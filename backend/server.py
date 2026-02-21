@@ -217,6 +217,43 @@ async def create_notification(
         "read_by": []
     }
     await db.notifications.insert_one(notif_doc)
+    
+    # Send push notifications to all subscribed admins
+    await send_push_to_admins(title, message, booking_id)
+
+async def send_push_to_admins(title: str, message: str, booking_id: Optional[str] = None):
+    """Send push notification to all admin subscriptions"""
+    if not VAPID_PRIVATE_KEY or not VAPID_PUBLIC_KEY:
+        logger.warning("VAPID keys not configured, skipping push notifications")
+        return
+    
+    subscriptions = await db.push_subscriptions.find({}).to_list(100)
+    
+    for sub in subscriptions:
+        try:
+            webpush(
+                subscription_info={
+                    "endpoint": sub["endpoint"],
+                    "keys": sub["keys"]
+                },
+                data=json.dumps({
+                    "title": title,
+                    "body": message,
+                    "icon": "/icons/icon-192x192.png",
+                    "badge": "/icons/icon-72x72.png",
+                    "tag": f"booking-{booking_id}" if booking_id else "sportcenter",
+                    "data": {"url": "/admin", "booking_id": booking_id}
+                }),
+                vapid_private_key=VAPID_PRIVATE_KEY,
+                vapid_claims={"sub": f"mailto:{VAPID_CLAIMS_EMAIL}"}
+            )
+        except WebPushException as e:
+            logger.error(f"Push notification failed: {e}")
+            # Remove invalid subscription
+            if e.response and e.response.status_code in [404, 410]:
+                await db.push_subscriptions.delete_one({"endpoint": sub["endpoint"]})
+        except Exception as e:
+            logger.error(f"Push notification error: {e}")
 
 @api_router.post("/auth/register")
 async def register(user_data: UserCreate):
