@@ -99,6 +99,16 @@ export default function AdminDashboard() {
                 <CalendarDays className="w-4 h-4 mr-2" />
                 Calendario
               </Button>
+              {!isViewer && (
+                <Button 
+                  variant="ghost" 
+                  onClick={() => navigate('/admin/users')}
+                  data-testid="users-list-btn"
+                >
+                  <UserCircle className="w-4 h-4 mr-2" />
+                  Clienti
+                </Button>
+              )}
               {isSuperAdmin && (
                 <Button 
                   variant="ghost" 
