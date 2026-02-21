@@ -155,6 +155,11 @@ async def login(credentials: UserLogin):
 async def get_me(current_user: dict = Depends(get_current_user)):
     return current_user
 
+@api_router.get("/users", response_model=List[User])
+async def get_users(current_user: dict = Depends(get_admin_user)):
+    users = await db.users.find({}, {"_id": 0, "password_hash": 0}).to_list(1000)
+    return users
+
 @api_router.get("/courts", response_model=List[Court])
 async def get_courts():
     courts = await db.courts.find({}, {"_id": 0}).to_list(100)
