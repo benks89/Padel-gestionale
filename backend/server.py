@@ -109,6 +109,8 @@ class Booking(BaseModel):
     ora_inizio: str
     ora_fine: str
     created_at: str
+    created_by_admin: Optional[str] = None
+    created_by_admin_nome: Optional[str] = None
 
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
