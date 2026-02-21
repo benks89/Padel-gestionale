@@ -40,6 +40,12 @@ export default function AdminCalendar() {
     }
   }
 
+  const allTimeSlots = [];
+  for (let hour = 7; hour < 24; hour++) {
+    allTimeSlots.push(`${hour.toString().padStart(2, '0')}:00`);
+    allTimeSlots.push(`${hour.toString().padStart(2, '0')}:30`);
+  }
+
   useEffect(() => {
     fetchData();
   }, [selectedDate]);
