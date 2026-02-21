@@ -118,6 +118,7 @@ async def register(user_data: UserCreate):
         "password_hash": hash_password(user_data.password),
         "nome": user_data.nome,
         "role": "user",
+        "telefono": user_data.telefono,
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     
@@ -129,7 +130,8 @@ async def register(user_data: UserCreate):
         "user": {
             "email": user_data.email,
             "nome": user_data.nome,
-            "role": "user"
+            "role": "user",
+            "telefono": user_data.telefono
         }
     }
 
