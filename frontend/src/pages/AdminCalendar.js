@@ -411,6 +411,127 @@ export default function AdminCalendar() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+        <DialogContent className="max-w-lg" data-testid="edit-booking-dialog">
+          <DialogHeader>
+            <DialogTitle>Modifica Prenotazione</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-6 py-4">
+            <div className="bg-blue-50 p-4 rounded-md border border-blue-200">
+              <div className="font-semibold text-lg mb-1">{editingBooking?.user_nome}</div>
+              <div className="text-sm text-slate-600">{editingBooking?.user_email}</div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Campo</Label>
+              <Select 
+                value={editForm.court_id} 
+                onValueChange={(value) => {
+                  const court = courts.find(c => c.id === value);
+                  setEditForm({ ...editForm, court_id: value, durata: court?.slot_duration || 90 });
+                }}
+              >
+                <SelectTrigger data-testid="edit-court-select">
+                  <SelectValue placeholder="Seleziona campo" />
+                </SelectTrigger>
+                <SelectContent>
+                  {courts.map(court => (
+                    <SelectItem key={court.id} value={court.id}>
+                      {court.nome}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Orario Inizio</Label>
+                <Select 
+                  value={editForm.ora_inizio} 
+                  onValueChange={(value) => setEditForm({ ...editForm, ora_inizio: value })}
+                >
+                  <SelectTrigger data-testid="edit-time-select">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[300px]">
+                    {allTimeSlots.map(time => (
+                      <SelectItem key={time} value={time}>
+                        {time}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Durata</Label>
+                <Select 
+                  value={editForm.durata.toString()} 
+                  onValueChange={(value) => setEditForm({ ...editForm, durata: parseInt(value) })}
+                >
+                  <SelectTrigger data-testid="edit-duration-select">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="60">1h 00min</SelectItem>
+                    <SelectItem value="90">1h 30min</SelectItem>
+                    <SelectItem value="120">2h 00min</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="bg-slate-50 p-4 rounded-md">
+              <div className="text-sm space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Orario:</span>
+                  <span className="font-semibold">
+                    {editForm.ora_inizio} - {
+                      (() => {
+                        const start = timeToMinutes(editForm.ora_inizio);
+                        const end = start + editForm.durata;
+                        return `${Math.floor(end / 60).toString().padStart(2, '0')}:${(end % 60).toString().padStart(2, '0')}`;
+                      })()
+                    }
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Campo:</span>
+                  <span className="font-semibold">{courts.find(c => c.id === editForm.court_id)?.nome}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Durata:</span>
+                  <span className="font-semibold">
+                    {editForm.durata === 60 ? '1h 00min' : editForm.durata === 90 ? '1h 30min' : '2h 00min'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button 
+              variant="destructive" 
+              onClick={() => {
+                if (window.confirm('Vuoi cancellare questa prenotazione?')) {
+                  handleDeleteBooking(editingBooking.id);
+                  setShowEditDialog(false);
+                }
+              }}
+              data-testid="delete-booking-btn"
+            >
+              Cancella
+            </Button>
+            <Button variant="outline" onClick={() => setShowEditDialog(false)} data-testid="cancel-edit-btn">
+              Annulla
+            </Button>
+            <Button onClick={handleUpdateBooking} data-testid="save-booking-btn">
+              Salva Modifiche
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
