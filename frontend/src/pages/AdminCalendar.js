@@ -23,6 +23,14 @@ export default function AdminCalendar() {
   const [showDialog, setShowDialog] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [bookingForm, setBookingForm] = useState({ name: '', email: '' });
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [editingBooking, setEditingBooking] = useState(null);
+  const [editForm, setEditForm] = useState({
+    court_id: '',
+    data: '',
+    ora_inizio: '',
+    durata: 90
+  });
 
   const timeSlots = [];
   for (let hour = 7; hour < 24; hour++) {
