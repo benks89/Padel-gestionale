@@ -379,6 +379,43 @@ async def get_activity_logs(current_user: dict = Depends(get_admin_user), limit:
     logs = await db.activity_logs.find({}, {"_id": 0}).sort("timestamp", -1).to_list(limit)
     return logs
 
+# Notifications Endpoints
+@api_router.get("/admin/notifications")
+async def get_notifications(current_user: dict = Depends(get_admin_user), limit: int = 50):
+    notifications = await db.notifications.find({}, {"_id": 0}).sort("timestamp", -1).to_list(limit)
+    # Add is_read field for current user
+    for notif in notifications:
+        notif["is_read"] = current_user["email"] in notif.get("read_by", [])
+    return notifications
+
+@api_router.get("/admin/notifications/unread-count")
+async def get_unread_count(current_user: dict = Depends(get_admin_user)):
+    count = await db.notifications.count_documents({
+        "read_by": {"$ne": current_user["email"]}
+    })
+    return {"count": count}
+
+@api_router.put("/admin/notifications/{notification_id}/read")
+async def mark_notification_read(notification_id: str, current_user: dict = Depends(get_admin_user)):
+    result = await db.notifications.update_one(
+        {"id": notification_id},
+        {"$addToSet": {"read_by": current_user["email"]}}
+    )
+    if result.modified_count == 0:
+        # Check if already read or not found
+        notif = await db.notifications.find_one({"id": notification_id})
+        if not notif:
+            raise HTTPException(status_code=404, detail="Notifica non trovata")
+    return {"message": "Notifica segnata come letta"}
+
+@api_router.put("/admin/notifications/read-all")
+async def mark_all_read(current_user: dict = Depends(get_admin_user)):
+    await db.notifications.update_many(
+        {"read_by": {"$ne": current_user["email"]}},
+        {"$addToSet": {"read_by": current_user["email"]}}
+    )
+    return {"message": "Tutte le notifiche segnate come lette"}
+
 @api_router.get("/courts", response_model=List[Court])
 async def get_courts():
     courts = await db.courts.find({}, {"_id": 0}).to_list(100)
