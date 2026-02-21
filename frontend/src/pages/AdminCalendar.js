@@ -552,12 +552,18 @@ export default function AdminCalendar() {
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
         <DialogContent className="max-w-lg" data-testid="edit-booking-dialog">
           <DialogHeader>
-            <DialogTitle>Modifica Prenotazione</DialogTitle>
+            <DialogTitle>{isViewer ? 'Dettagli Prenotazione' : 'Modifica Prenotazione'}</DialogTitle>
           </DialogHeader>
           <div className="space-y-6 py-4">
             <div className="bg-blue-50 p-4 rounded-md border border-blue-200">
               <div className="font-semibold text-lg mb-1">{editingBooking?.user_nome}</div>
-              <div className="text-sm text-slate-600">{editingBooking?.user_email}</div>
+              {!isViewer && <div className="text-sm text-slate-600">{editingBooking?.user_email}</div>}
+              {editingBooking?.created_by_admin_nome && (
+                <div className="text-sm text-slate-500 mt-2 flex items-center gap-1">
+                  <User className="w-3 h-3" />
+                  Creata da: {editingBooking.created_by_admin_nome}
+                </div>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -568,6 +574,7 @@ export default function AdminCalendar() {
                   const court = courts.find(c => c.id === value);
                   setEditForm({ ...editForm, court_id: value, durata: court?.slot_duration || 90 });
                 }}
+                disabled={isViewer}
               >
                 <SelectTrigger data-testid="edit-court-select">
                   <SelectValue placeholder="Seleziona campo" />
