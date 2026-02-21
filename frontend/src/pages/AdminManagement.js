@@ -145,6 +145,7 @@ export default function AdminManagement() {
               <span className="text-sm text-slate-600">
                 {roleLabels[user?.admin_role]?.label}: <strong>{user?.nome}</strong>
               </span>
+              <NotificationBell />
               <Button variant="ghost" onClick={handleLogout} size="sm" data-testid="admin-logout-btn">
                 <LogOut className="w-4 h-4" />
               </Button>
