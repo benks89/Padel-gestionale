@@ -271,12 +271,34 @@ export default function AdminCalendar() {
               >
                 <ChevronLeft className="w-4 h-4" />
               </Button>
-              <div className="flex items-center gap-2">
-                <CalendarIcon className="w-5 h-5 text-primary" />
-                <span className="text-xl font-semibold">
-                  {format(selectedDate, 'EEEE d MMMM yyyy', { locale: it })}
-                </span>
-              </div>
+              <Popover open={showCalendarPicker} onOpenChange={setShowCalendarPicker}>
+                <PopoverTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    className="flex items-center gap-2 hover:bg-slate-100"
+                    data-testid="open-calendar-picker"
+                  >
+                    <CalendarIcon className="w-5 h-5 text-primary" />
+                    <span className="text-xl font-semibold">
+                      {format(selectedDate, 'EEEE d MMMM yyyy', { locale: it })}
+                    </span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="center">
+                  <Calendar
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={(date) => {
+                      if (date) {
+                        setSelectedDate(date);
+                        setShowCalendarPicker(false);
+                      }
+                    }}
+                    locale={it}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
               <Button
                 variant="outline"
                 size="sm"
