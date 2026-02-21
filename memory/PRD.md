@@ -10,11 +10,13 @@ Applicazione per gestire le prenotazioni di un centro sportivo con 4 campi da pa
 4. **Durate:** Padel 1h30min (default), Calcio 1h (default), ma personalizzabile (30min, 1h, 1h30min, 2h, 2h30min, 3h)
 5. **Pannello Admin:** Vista calendario multi-campo, gestione prenotazioni
 6. **Sistema Multi-Admin:** Ruoli (super_admin, admin, viewer), gestione admin, log attività
+7. **PWA + Push Notifications:** App installabile su telefono con notifiche push
 
 ## Stack Tecnologico
-- **Backend:** FastAPI, Python, MongoDB (motor)
+- **Backend:** FastAPI, Python, MongoDB (motor), pywebpush
 - **Frontend:** React, TailwindCSS, Shadcn/UI
 - **Auth:** JWT
+- **PWA:** Service Worker, Web Push API, VAPID
 
 ## Cosa è stato implementato
 
@@ -47,6 +49,28 @@ Applicazione per gestire le prenotazioni di un centro sportivo con 4 campi da pa
 - [x] Tracciamento chi crea prenotazioni (created_by_admin)
 - [x] Restrizioni viewer: solo visualizzazione, no dati clienti
 - [x] Badge ruolo nella navbar
+
+### Fase 5 - Sezione Clienti (Completato - 21/02/2026)
+- [x] Pagina elenco clienti registrati
+- [x] Ricerca per nome, email, telefono
+- [x] Visualizzazione data registrazione
+- [x] Solo admin/super_admin (no viewer)
+
+### Fase 6 - Notifiche In-App (Completato - 21/02/2026)
+- [x] Sistema notifiche nel database
+- [x] Campanella con badge contatore
+- [x] Dropdown notifiche con lista
+- [x] Segna come letta / Segna tutte lette
+- [x] Notifica automatica alla creazione prenotazione
+
+### Fase 7 - PWA + Push Notifications (Completato - 21/02/2026)
+- [x] manifest.json per installazione app
+- [x] Service Worker per caching e push
+- [x] Icone PWA multiple risoluzioni
+- [x] Integrazione Web Push con VAPID
+- [x] Endpoint subscribe/unsubscribe push
+- [x] Pulsante "Attiva Push" nella navbar
+- [x] Notifiche push al telefono quando app chiusa
 
 ## Schema Database
 
@@ -82,47 +106,45 @@ Applicazione per gestire le prenotazioni di un centro sportivo con 4 campi da pa
 }
 ```
 
-### activity_logs
+### notifications
 ```
 {
   "id": str,
-  "action": "create" | "update" | "delete",
-  "entity_type": "booking" | "admin",
-  "entity_id": str,
-  "admin_email": str,
-  "admin_nome": str,
-  "details": str,
-  "timestamp": str
+  "type": str,
+  "title": str,
+  "message": str,
+  "booking_id": str (opzionale),
+  "created_by": str,
+  "created_by_nome": str,
+  "is_admin_action": bool,
+  "timestamp": str,
+  "read_by": [str]
 }
 ```
 
-## API Endpoints Chiave
-
-### Auth
-- POST /api/auth/register
-- POST /api/auth/login
-- GET /api/auth/me
-
-### Admin Management
-- GET /api/admin/admins
-- POST /api/admin/admins (super_admin only)
-- PUT /api/admin/admins/{email} (super_admin only)
-- DELETE /api/admin/admins/{email} (super_admin only)
-
-### Activity Logs
-- GET /api/admin/activity-logs
-
-### Bookings
-- POST /api/admin/bookings?user_email={email} (admin/super_admin)
-- PUT /api/bookings/{id} (admin/super_admin)
-- DELETE /api/bookings/{id} (admin/super_admin)
+### push_subscriptions
+```
+{
+  "endpoint": str,
+  "keys": { "p256dh": str, "auth": str },
+  "admin_email": str,
+  "created_at": str
+}
+```
 
 ## Credenziali Test
 - Super Admin: admin@sportcenter.com / admin123
 - Viewer: viewer@sportcenter.com / viewer123
 
+## Come Installare la PWA
+1. Apri l'app su Chrome/Safari sul telefono
+2. Clicca "Aggiungi alla schermata Home" (Android) o il pulsante condividi → "Aggiungi a Home" (iOS)
+3. Accedi come admin
+4. Clicca "Attiva Push" nella navbar
+5. Consenti le notifiche quando richiesto
+6. Ora riceverai notifiche push anche quando l'app è chiusa!
+
 ## Backlog / Future Tasks
-- [ ] Notifiche email per prenotazioni
 - [ ] Vista campo calcio a 7 nel calendario admin
 - [ ] Report statistiche avanzate
 - [ ] Export prenotazioni in Excel/PDF
@@ -132,5 +154,9 @@ Applicazione per gestire le prenotazioni di un centro sportivo con 4 campi da pa
 - /app/backend/server.py - Backend principale
 - /app/frontend/src/pages/AdminCalendar.js - Calendario multi-campo
 - /app/frontend/src/pages/AdminManagement.js - Gestione admin
+- /app/frontend/src/pages/AdminUsers.js - Elenco clienti
 - /app/frontend/src/pages/ActivityLogs.js - Log attività
-- /app/frontend/src/pages/AdminDashboard.js - Dashboard admin
+- /app/frontend/src/components/NotificationBell.js - Campanella notifiche
+- /app/frontend/src/components/PushNotificationToggle.js - Toggle push
+- /app/frontend/public/sw.js - Service Worker PWA
+- /app/frontend/public/manifest.json - PWA Manifest
