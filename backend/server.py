@@ -33,6 +33,7 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str
     nome: str
+    telefono: Optional[str] = None
 
 class UserLogin(BaseModel):
     email: EmailStr
@@ -43,6 +44,7 @@ class User(BaseModel):
     email: str
     nome: str
     role: str = "user"
+    telefono: Optional[str] = None
 
 class Court(BaseModel):
     model_config = ConfigDict(extra="ignore")
