@@ -650,6 +650,15 @@ async def startup_event():
         ]
         await db.courts.insert_many(default_courts)
         logger.info("Campi inizializzati")
+    
+    # Update existing admin to super_admin if not set
+    await db.users.update_many(
+        {"role": "admin", "admin_role": {"$exists": False}},
+        {"$set": {"admin_role": "super_admin", "is_active": True}}
+    )
+    
+    # Create index for activity logs
+    await db.activity_logs.create_index("timestamp")
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
