@@ -35,6 +35,17 @@ class UserCreate(BaseModel):
     nome: str
     telefono: Optional[str] = None
 
+class AdminCreate(BaseModel):
+    email: EmailStr
+    password: str
+    nome: str
+    admin_role: str = "admin"  # super_admin, admin, viewer
+
+class AdminUpdate(BaseModel):
+    nome: Optional[str] = None
+    admin_role: Optional[str] = None
+    is_active: Optional[bool] = None
+
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
@@ -45,6 +56,28 @@ class User(BaseModel):
     nome: str
     role: str = "user"
     telefono: Optional[str] = None
+    admin_role: Optional[str] = None
+    is_active: bool = True
+
+class AdminUser(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    email: str
+    nome: str
+    role: str = "admin"
+    admin_role: str = "admin"
+    is_active: bool = True
+    created_at: Optional[str] = None
+
+class ActivityLog(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    action: str
+    entity_type: str
+    entity_id: str
+    admin_email: str
+    admin_nome: str
+    details: str
+    timestamp: str
 
 class Court(BaseModel):
     model_config = ConfigDict(extra="ignore")
