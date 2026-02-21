@@ -139,7 +139,7 @@ export default function AdminCalendar() {
         durata: court?.slot_duration || 90
       });
       setShowEditDialog(true);
-    } else {
+    } else if (!isViewer) {
       setSelectedSlot({ courtId, timeSlot });
       setBookingForm({ selectedUser: '', name: '', email: '', telefono: '', isNewUser: false, durata: 90 });
       setShowDialog(true);
