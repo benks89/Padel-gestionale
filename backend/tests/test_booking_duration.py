@@ -218,12 +218,13 @@ class TestBookingDurationFeature:
         except:
             pass
         
+        # Use a less likely to conflict time slot
         response = self.session.post(
             f"{BASE_URL}/api/admin/bookings?user_email={test_email}",
             json={
                 "court_id": "padel1",
                 "data": TEST_DATE,
-                "ora_inizio": "14:00",
+                "ora_inizio": "07:30",  # Early morning, less likely conflict
                 "durata": 150
             }
         )
@@ -231,8 +232,8 @@ class TestBookingDurationFeature:
         assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
         
         booking = response.json()
-        assert booking["ora_inizio"] == "14:00"
-        assert booking["ora_fine"] == "16:30"  # 2h30 later
+        assert booking["ora_inizio"] == "07:30"
+        assert booking["ora_fine"] == "10:00"  # 2h30 later (7:30 + 150min = 10:00)
         
         print(f"✓ Created 150min booking: {booking['ora_inizio']} - {booking['ora_fine']}")
         
