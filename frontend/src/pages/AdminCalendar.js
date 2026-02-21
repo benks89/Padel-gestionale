@@ -26,6 +26,7 @@ export default function AdminCalendar() {
   const [loading, setLoading] = useState(true);
   const [showDialog, setShowDialog] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
+  const [showCalendarPicker, setShowCalendarPicker] = useState(false);
   const [bookingForm, setBookingForm] = useState({ 
     selectedUser: '', 
     name: '', 
