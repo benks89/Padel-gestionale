@@ -32,8 +32,18 @@ export default function AdminCalendar() {
     name: '', 
     email: '', 
     telefono: '',
-    isNewUser: false 
+    isNewUser: false,
+    durata: 90
   });
+
+  const durationOptions = [
+    { value: 30, label: '30 min' },
+    { value: 60, label: '1h' },
+    { value: 90, label: '1h 30min' },
+    { value: 120, label: '2h' },
+    { value: 150, label: '2h 30min' },
+    { value: 180, label: '3h' }
+  ];
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [editingBooking, setEditingBooking] = useState(null);
   const [editForm, setEditForm] = useState({
@@ -128,7 +138,7 @@ export default function AdminCalendar() {
       setShowEditDialog(true);
     } else {
       setSelectedSlot({ courtId, timeSlot });
-      setBookingForm({ selectedUser: '', name: '', email: '', telefono: '', isNewUser: false });
+      setBookingForm({ selectedUser: '', name: '', email: '', telefono: '', isNewUser: false, durata: 90 });
       setShowDialog(true);
     }
   };
@@ -143,7 +153,8 @@ export default function AdminCalendar() {
 
       await axios.put(`${API_URL}/bookings/${editingBooking.id}`, {
         data: editForm.data,
-        ora_inizio: editForm.ora_inizio
+        ora_inizio: editForm.ora_inizio,
+        durata: editForm.durata
       });
 
       if (editForm.court_id !== editingBooking.court_id) {
@@ -219,7 +230,8 @@ export default function AdminCalendar() {
         {
           court_id: selectedSlot.courtId,
           data: format(selectedDate, 'yyyy-MM-dd'),
-          ora_inizio: selectedSlot.timeSlot
+          ora_inizio: selectedSlot.timeSlot,
+          durata: bookingForm.durata
         }
       );
 
@@ -486,11 +498,36 @@ export default function AdminCalendar() {
               </>
             )}
 
+            <div className="space-y-2">
+              <Label>Durata</Label>
+              <Select 
+                value={bookingForm.durata.toString()} 
+                onValueChange={(value) => setBookingForm({ ...bookingForm, durata: parseInt(value) })}
+              >
+                <SelectTrigger data-testid="create-duration-select">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {durationOptions.map(opt => (
+                    <SelectItem key={opt.value} value={opt.value.toString()}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
             {selectedSlot && (
               <div className="bg-slate-50 p-4 rounded-md text-sm">
                 <div><strong>Campo:</strong> {courts.find(c => c.id === selectedSlot.courtId)?.nome}</div>
-                <div><strong>Orario:</strong> {selectedSlot.timeSlot}</div>
-                <div><strong>Durata:</strong> 1h 30min</div>
+                <div><strong>Orario:</strong> {selectedSlot.timeSlot} - {
+                  (() => {
+                    const start = timeToMinutes(selectedSlot.timeSlot);
+                    const end = start + bookingForm.durata;
+                    return `${Math.floor(end / 60).toString().padStart(2, '0')}:${(end % 60).toString().padStart(2, '0')}`;
+                  })()
+                }</div>
+                <div><strong>Durata:</strong> {durationOptions.find(d => d.value === bookingForm.durata)?.label}</div>
               </div>
             )}
           </div>
@@ -568,9 +605,11 @@ export default function AdminCalendar() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="60">1h 00min</SelectItem>
-                    <SelectItem value="90">1h 30min</SelectItem>
-                    <SelectItem value="120">2h 00min</SelectItem>
+                    {durationOptions.map(opt => (
+                      <SelectItem key={opt.value} value={opt.value.toString()}>
+                        {opt.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -597,7 +636,7 @@ export default function AdminCalendar() {
                 <div className="flex justify-between">
                   <span className="text-slate-600">Durata:</span>
                   <span className="font-semibold">
-                    {editForm.durata === 60 ? '1h 00min' : editForm.durata === 90 ? '1h 30min' : '2h 00min'}
+                    {durationOptions.find(d => d.value === editForm.durata)?.label || `${editForm.durata} min`}
                   </span>
                 </div>
               </div>
