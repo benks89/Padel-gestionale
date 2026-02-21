@@ -269,6 +269,7 @@ export default function AdminCalendar() {
                 <Grid3x3 className="w-4 h-4 mr-2" />
                 Dashboard
               </Button>
+              <NotificationBell />
               <span className="text-sm text-slate-600">Admin: <strong>{user?.nome}</strong></span>
               <Button variant="ghost" onClick={handleLogout} size="sm" data-testid="admin-logout-btn">
                 <LogOut className="w-4 h-4" />
