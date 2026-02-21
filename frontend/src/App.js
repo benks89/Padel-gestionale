@@ -7,6 +7,7 @@ import UserDashboard from '@/pages/UserDashboard';
 import AdminDashboard from '@/pages/AdminDashboard';
 import AdminCalendar from '@/pages/AdminCalendar';
 import AdminManagement from '@/pages/AdminManagement';
+import AdminUsers from '@/pages/AdminUsers';
 import ActivityLogs from '@/pages/ActivityLogs';
 import Booking from '@/pages/Booking';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
