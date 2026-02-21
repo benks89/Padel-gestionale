@@ -125,7 +125,7 @@ export default function AdminCalendar() {
       setShowEditDialog(true);
     } else {
       setSelectedSlot({ courtId, timeSlot });
-      setBookingForm({ name: '', email: '' });
+      setBookingForm({ selectedUser: '', name: '', email: '', telefono: '', isNewUser: false });
       setShowDialog(true);
     }
   };
