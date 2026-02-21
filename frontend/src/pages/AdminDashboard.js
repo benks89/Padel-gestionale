@@ -128,6 +128,7 @@ export default function AdminDashboard() {
                 <Activity className="w-4 h-4 mr-2" />
                 Log Attività
               </Button>
+              <NotificationBell />
               <div className="flex items-center gap-2 text-sm text-slate-600">
                 <Badge variant="outline" className="flex items-center gap-1">
                   <Shield className="w-3 h-3" />
