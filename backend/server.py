@@ -142,7 +142,33 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
 async def get_admin_user(current_user: dict = Depends(get_current_user)):
     if current_user.get("role") != "admin":
         raise HTTPException(status_code=403, detail="Admin access required")
+    if current_user.get("is_active") == False:
+        raise HTTPException(status_code=403, detail="Account admin disabilitato")
     return current_user
+
+async def get_super_admin(current_user: dict = Depends(get_admin_user)):
+    if current_user.get("admin_role") != "super_admin":
+        raise HTTPException(status_code=403, detail="Super admin access required")
+    return current_user
+
+async def get_editor_admin(current_user: dict = Depends(get_admin_user)):
+    if current_user.get("admin_role") == "viewer":
+        raise HTTPException(status_code=403, detail="Non hai i permessi per modificare")
+    return current_user
+
+async def log_activity(action: str, entity_type: str, entity_id: str, admin_email: str, admin_nome: str, details: str):
+    log_id = f"LOG{datetime.now(timezone.utc).timestamp()}".replace(".", "")
+    log_doc = {
+        "id": log_id,
+        "action": action,
+        "entity_type": entity_type,
+        "entity_id": entity_id,
+        "admin_email": admin_email,
+        "admin_nome": admin_nome,
+        "details": details,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
+    await db.activity_logs.insert_one(log_doc)
 
 @api_router.post("/auth/register")
 async def register(user_data: UserCreate):
