@@ -193,8 +193,10 @@ export default function AdminCalendar() {
           telefono: bookingForm.telefono || null
         });
       } catch (error) {
-        if (error.response?.status !== 400) {
-          toast.error('Errore nella creazione utente');
+        if (error.response?.status === 400 && error.response?.data?.detail?.includes('Email già registrata')) {
+          console.log('Email già esistente, procedo con la prenotazione');
+        } else {
+          toast.error(error.response?.data?.detail || 'Errore nella creazione utente');
           return;
         }
       }
@@ -204,7 +206,11 @@ export default function AdminCalendar() {
         return;
       }
       const selectedUserData = users.find(u => u.email === bookingForm.selectedUser);
-      userEmail = selectedUserData.email;
+      userEmail = selectedUserData?.email;
+      if (!userEmail) {
+        toast.error('Cliente non trovato');
+        return;
+      }
     }
 
     try {
@@ -221,7 +227,7 @@ export default function AdminCalendar() {
       setShowDialog(false);
       fetchData();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Errore nella creazione');
+      toast.error(error.response?.data?.detail || 'Errore nella creazione della prenotazione');
     }
   };
 
