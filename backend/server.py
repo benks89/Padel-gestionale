@@ -241,8 +241,10 @@ async def create_booking(booking_data: BookingCreate, current_user: dict = Depen
     if not court:
         raise HTTPException(status_code=404, detail="Campo non trovato")
     
+    duration = booking_data.durata if booking_data.durata else court["slot_duration"]
+    
     hour, minute = map(int, booking_data.ora_inizio.split(':'))
-    total_minutes = hour * 60 + minute + court["slot_duration"]
+    total_minutes = hour * 60 + minute + duration
     ora_fine = f"{total_minutes // 60:02d}:{total_minutes % 60:02d}"
     
     def time_to_minutes(time_str):
