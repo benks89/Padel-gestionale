@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { Calendar, Clock, Trash2, LogOut, Filter, CalendarDays, Users, Activity, Shield, UserCircle } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import NotificationBell from '@/components/NotificationBell';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
