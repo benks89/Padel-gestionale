@@ -41,9 +41,9 @@ export default function AdminCalendar() {
   });
 
   const timeSlots = [];
-  for (let hour = 7; hour < 24; hour++) {
+  for (let hour = 8; hour < 23; hour++) {
     timeSlots.push(`${hour.toString().padStart(2, '0')}:00`);
-    if (hour < 23) {
+    if (hour < 22) {
       timeSlots.push(`${hour.toString().padStart(2, '0')}:30`);
     }
   }
