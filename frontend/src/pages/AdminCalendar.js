@@ -659,23 +659,27 @@ export default function AdminCalendar() {
             </div>
           </div>
           <DialogFooter className="gap-2">
-            <Button 
-              variant="destructive" 
-              onClick={() => {
-                if (window.confirm('Vuoi cancellare questa prenotazione?')) {
-                  handleDeleteBooking(editingBooking.id);
-                  setShowEditDialog(false);
-                }
-              }}
-              data-testid="delete-booking-btn"
-            >
-              Cancella
-            </Button>
+            {!isViewer && (
+              <>
+                <Button 
+                  variant="destructive" 
+                  onClick={() => {
+                    if (window.confirm('Vuoi cancellare questa prenotazione?')) {
+                      handleDeleteBooking(editingBooking.id);
+                      setShowEditDialog(false);
+                    }
+                  }}
+                  data-testid="delete-booking-btn"
+                >
+                  Cancella
+                </Button>
+                <Button onClick={handleUpdateBooking} data-testid="save-booking-btn">
+                  Salva Modifiche
+                </Button>
+              </>
+            )}
             <Button variant="outline" onClick={() => setShowEditDialog(false)} data-testid="cancel-edit-btn">
-              Annulla
-            </Button>
-            <Button onClick={handleUpdateBooking} data-testid="save-booking-btn">
-              Salva Modifiche
+              {isViewer ? 'Chiudi' : 'Annulla'}
             </Button>
           </DialogFooter>
         </DialogContent>
