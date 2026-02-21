@@ -397,9 +397,16 @@ export default function AdminCalendar() {
                             }}
                             onClick={() => handleSlotClick(court.id, booking.ora_inizio)}
                             data-testid={`booking-${booking.id}`}
+                            title={booking.created_by_admin_nome ? `Creata da: ${booking.created_by_admin_nome}` : ''}
                           >
                             <div className="text-[10px] font-semibold leading-tight">{booking.ora_inizio} - {booking.ora_fine}</div>
                             <div className="text-[10px] font-medium leading-tight mt-0.5">{booking.user_nome}</div>
+                            {booking.created_by_admin_nome && getBookingHeight(booking) >= 50 && (
+                              <div className="text-[8px] opacity-80 leading-tight mt-0.5 flex items-center gap-0.5">
+                                <User className="w-2 h-2" />
+                                {booking.created_by_admin_nome}
+                              </div>
+                            )}
                           </div>
                         ))}
                     </div>
