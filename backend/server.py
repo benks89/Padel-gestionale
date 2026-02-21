@@ -183,6 +183,30 @@ async def log_activity(action: str, entity_type: str, entity_id: str, admin_emai
     }
     await db.activity_logs.insert_one(log_doc)
 
+async def create_notification(
+    notification_type: str,
+    title: str,
+    message: str,
+    created_by: str,
+    created_by_nome: str,
+    is_admin_action: bool = False,
+    booking_id: Optional[str] = None
+):
+    notif_id = f"NOTIF{datetime.now(timezone.utc).timestamp()}".replace(".", "")
+    notif_doc = {
+        "id": notif_id,
+        "type": notification_type,
+        "title": title,
+        "message": message,
+        "booking_id": booking_id,
+        "created_by": created_by,
+        "created_by_nome": created_by_nome,
+        "is_admin_action": is_admin_action,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "read_by": []
+    }
+    await db.notifications.insert_one(notif_doc)
+
 @api_router.post("/auth/register")
 async def register(user_data: UserCreate):
     existing_user = await db.users.find_one({"email": user_data.email})
