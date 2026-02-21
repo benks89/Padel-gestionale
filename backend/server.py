@@ -541,6 +541,17 @@ async def create_booking(booking_data: BookingCreate, current_user: dict = Depen
     
     await db.bookings.insert_one(booking_doc)
     
+    # Create notification for admins (user booking)
+    await create_notification(
+        notification_type="booking_created",
+        title="Nuova Prenotazione",
+        message=f"{current_user['nome']} ha prenotato {court['nome']} il {booking_data.data} alle {booking_data.ora_inizio}",
+        created_by=current_user["email"],
+        created_by_nome=current_user["nome"],
+        is_admin_action=False,
+        booking_id=booking_id
+    )
+    
     return Booking(**{k: v for k, v in booking_doc.items() if k != "_id"})
 
 @api_router.get("/bookings/my", response_model=List[Booking])
