@@ -114,6 +114,39 @@ export default function AdminCalendar() {
     }
   };
 
+  const handleUpdateBooking = async () => {
+    if (!editingBooking) return;
+
+    try {
+      const startMinutes = timeToMinutes(editForm.ora_inizio);
+      const endMinutes = startMinutes + editForm.durata;
+      const ora_fine = `${Math.floor(endMinutes / 60).toString().padStart(2, '0')}:${(endMinutes % 60).toString().padStart(2, '0')}`;
+
+      await axios.put(`${API_URL}/bookings/${editingBooking.id}`, {
+        data: editForm.data,
+        ora_inizio: editForm.ora_inizio
+      });
+
+      if (editForm.court_id !== editingBooking.court_id) {
+        await axios.delete(`${API_URL}/bookings/${editingBooking.id}`);
+        await axios.post(
+          `${API_URL}/admin/bookings?user_email=${editingBooking.user_email}`,
+          {
+            court_id: editForm.court_id,
+            data: editForm.data,
+            ora_inizio: editForm.ora_inizio
+          }
+        );
+      }
+
+      toast.success('Prenotazione aggiornata');
+      setShowEditDialog(false);
+      fetchData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Errore nell\'aggiornamento');
+    }
+  };
+
   const handleDeleteBooking = async (bookingId) => {
     try {
       await axios.delete(`${API_URL}/bookings/${bookingId}`);
