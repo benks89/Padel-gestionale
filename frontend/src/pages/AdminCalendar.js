@@ -98,9 +98,15 @@ export default function AdminCalendar() {
   const handleSlotClick = (courtId, timeSlot) => {
     const booking = getBookingForSlot(courtId, timeSlot);
     if (booking) {
-      if (window.confirm('Vuoi cancellare questa prenotazione?')) {
-        handleDeleteBooking(booking.id);
-      }
+      setEditingBooking(booking);
+      const court = courts.find(c => c.id === booking.court_id);
+      setEditForm({
+        court_id: booking.court_id,
+        data: booking.data,
+        ora_inizio: booking.ora_inizio,
+        durata: court?.slot_duration || 90
+      });
+      setShowEditDialog(true);
     } else {
       setSelectedSlot({ courtId, timeSlot });
       setBookingForm({ name: '', email: '' });
