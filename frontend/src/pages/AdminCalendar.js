@@ -102,13 +102,13 @@ export default function AdminCalendar() {
     const start = timeToMinutes(booking.ora_inizio);
     const end = timeToMinutes(booking.ora_fine);
     const duration = end - start;
-    return (duration / 30) * 60;
+    return (duration / 30) * 35;
   };
 
   const getBookingTop = (booking) => {
     const start = timeToMinutes(booking.ora_inizio);
     const firstSlot = timeToMinutes(timeSlots[0]);
-    return ((start - firstSlot) / 30) * 60;
+    return ((start - firstSlot) / 30) * 35;
   };
 
   const handleSlotClick = (courtId, timeSlot) => {
